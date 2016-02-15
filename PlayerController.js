@@ -6,43 +6,76 @@ public var gravity : float;
 private var targetRotation : int;
 private var canDoubleJump : boolean;
 
+var walkStateHash : int = Animator.StringToHash("Walk");
+var anim : Animator;
+
 //Disable Gravity
-GetComponent.<Rigidbody>().useGravity = false;
+//GetComponent.<Rigidbody>().useGravity = false;
+
+function Start () {
+    anim = GetComponent("Animator");
+}
 
 function FixedUpdate() {
-	transform.position.z = 0;
+	var stateInfo : AnimatorStateInfo = anim.GetCurrentAnimatorStateInfo(0);
+	transform.position.z = -9;
 
 	//Apply New Gravity
 	GetComponent.<Rigidbody>().AddForce(new Vector3(0, -gravity*GetComponent.<Rigidbody>().mass, 0));
 
 	//Handle Horz Movement
-  if(transform.position.x <= -9.0){
-    transform.position = new Vector2(-9.0f, transform.position.y);
-  }
-  if(transform.position.y <= -8.0){
-    transform.position = new Vector2(transform.position.x, -8.0f);
-  }
+  // if(transform.position.x <= -9.0){
+  //   transform.position = new Vector2(-9.0f, transform.position.y);
+  // }
+  // if(transform.position.y <= -20.0){
+  //   transform.position = new Vector2(transform.position.x, -8.0f);
+  // }
 
-  if(Input.GetButton('Run')){
-    GetComponent.<Rigidbody>().velocity.x = (speed*2) * Input.GetAxis("Horizontal");
+  if(Input.GetButton('Horizontal')){
+  	anim.SetBool('Idle', false);
+  	if(isGrounded()){
+  		if(Input.GetButton('Run')){
+  			anim.SetBool('Walk', false);
+  			anim.SetBool('Run', true);
+  		}else{
+  			anim.SetBool('Walk', true);
+  			anim.SetBool('Run', false);
+  		}
+  	}else{
+  		anim.SetBool('Walk', false);
+  		anim.SetBool('Run', false);
+  	}
   }else{
-    GetComponent.<Rigidbody>().velocity.x = speed * Input.GetAxis("Horizontal");
+  	anim.SetBool('Idle', true);
+  	anim.SetBool('Walk', false);
+  	anim.SetBool('Run', false);
   }
 
-	if(GetComponent.<Rigidbody>().velocity.x < 0) {
+  if(Input.GetButton('Run') && Input.GetButton('Horizontal') && isGrounded()){
+    GetComponent.<Rigidbody>().velocity.x = (speed*2) * Input.GetAxis("Horizontal");
+  }else if(Input.GetButton('Horizontal') && isGrounded()){
+    GetComponent.<Rigidbody>().velocity.x = speed * Input.GetAxis("Horizontal");
+  } else {
+  }
+
+	if(GetComponent.<Rigidbody>().velocity.x < 0 && Input.GetButton('Horizontal')) {
 		//if we're moving to the left
-		targetRotation = 180; //set char to left
+		targetRotation = 270; //set char to left
 	}
-	else if(GetComponent.<Rigidbody>().velocity.x > 0) {
+	else if(GetComponent.<Rigidbody>().velocity.x > 0 && Input.GetButton('Horizontal')) {
 		//if we're moving to the right
-		targetRotation = 0;
+		targetRotation = 90;
 	}
 	transform.eulerAngles.y-=(transform.eulerAngles.y-targetRotation)/5;
 
 	//Handle jump
 	//if user hits jump key and we are on the ground
 	if(Input.GetButtonDown("Jump")){
+	Debug.Log("jummping");
     if(isGrounded()){
+    	anim.SetTrigger('Jump');
+    	anim.SetBool('Walk', false);
+  		anim.SetBool('Run', false);
       GetComponent.<Rigidbody>().velocity.y = 0;
       GetComponent.<Rigidbody>().AddForce(new Vector2(0, jumpHeight));
       canDoubleJump = true;

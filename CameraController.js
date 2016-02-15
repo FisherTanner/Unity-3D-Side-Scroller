@@ -10,7 +10,7 @@ function Update () {
 
     // X axis
    if(target.transform.position.x < 0.0f) {
-       transform.position = new Vector3(0.0f, transform.position.y, -8.328f);
+       transform.position = new Vector3(0.0f, transform.position.y, -15);
    }else if(target.transform.position.y < -3){
      transform.position.x = transform.position.x;
    }else{
@@ -19,7 +19,7 @@ function Update () {
 
    // Y axis
    if (target.transform.position.y < 0.0f) {
-       transform.position = new Vector3(transform.position.x, transform.position.y, -8.328f);
+       transform.position = new Vector3(transform.position.x, transform.position.y, -15);
    } else {
      transform.position.y = target.transform.position.y+2.44;
    }
