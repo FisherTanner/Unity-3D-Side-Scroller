@@ -3,6 +3,8 @@
 public var rotate : float = 50.0;
 var scoreValue : int;
 private var gameController : GameController;
+public var particle : GameObject;
+public var clip : AudioClip;
 
 function Start () {
 	//coinCount = 0;
@@ -23,7 +25,9 @@ function Update () {
 function OnTriggerEnter(col:Collider) {
 	if(col.tag == "Player") {
 		if(gameObject.tag == "gem") {
-			//Debug.Log(coinCount);
+			var effect : GameObject = Instantiate(particle, gameObject.transform.position, transform.rotation);
+			//var effectScale : Vector3 = gameObject.transform.localScale/2;
+			AudioSource.PlayClipAtPoint(clip, gameObject.transform.position);
 			gameController.AddScore (scoreValue);
 			Destroy(gameObject);
 		}
