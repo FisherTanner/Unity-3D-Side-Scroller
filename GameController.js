@@ -4,7 +4,7 @@ var scoreText : UI.Text;
 private var score : int;
 
 function Start () {
-  scoreText = GameObject.FindWithTag("score").GetComponent(UI.Text);;
+  scoreText = GameObject.FindWithTag("score").GetComponent(UI.Text);
   score = 0;
   UpdateScore();
 }

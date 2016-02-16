@@ -71,7 +71,6 @@ function FixedUpdate() {
 	//Handle jump
 	//if user hits jump key and we are on the ground
 	if(Input.GetButtonDown("Jump")){
-	Debug.Log("jummping");
     if(isGrounded()){
     	anim.SetTrigger('Jump');
     	anim.SetBool('Walk', false);
@@ -118,3 +117,16 @@ function FixedUpdate() {
 		}
 		return false;
 	}
+
+  function OnTriggerStay(other:Collider){
+    if(other.attachedRigidbody){
+      transform.parent = other.transform;
+      Debug.Log("parent to "+other);
+    }
+  }
+
+  function OnTriggerExit(other:Collider){
+    if(other.attachedRigidbody){
+      transform.parent = null;
+    }
+  }
