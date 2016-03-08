@@ -34,6 +34,7 @@ function FixedUpdate() {
   if(Input.GetButton('Horizontal')){
   	anim.SetBool('Idle', false);
   	if(isGrounded()){
+      anim.SetBool('Jump', false);
   		if(Input.GetButton('Run')){
   			anim.SetBool('Walk', false);
   			anim.SetBool('Run', true);
@@ -42,6 +43,7 @@ function FixedUpdate() {
   			anim.SetBool('Run', false);
   		}
   	}else{
+      anim.SetBool('Jump', true);
   		anim.SetBool('Walk', false);
   		anim.SetBool('Run', false);
   	}
@@ -51,11 +53,10 @@ function FixedUpdate() {
   	anim.SetBool('Run', false);
   }
 
-  if(Input.GetButton('Run') && Input.GetButton('Horizontal') && isGrounded()){
+  if(Input.GetButton('Run') && Input.GetButton('Horizontal')){
     GetComponent.<Rigidbody>().velocity.x = (speed*2) * Input.GetAxis("Horizontal");
-  }else if(Input.GetButton('Horizontal') && isGrounded()){
+  }else{
     GetComponent.<Rigidbody>().velocity.x = speed * Input.GetAxis("Horizontal");
-  } else {
   }
 
 	if(GetComponent.<Rigidbody>().velocity.x < 0 && Input.GetButton('Horizontal')) {
@@ -76,13 +77,13 @@ function FixedUpdate() {
     	anim.SetBool('Walk', false);
   		anim.SetBool('Run', false);
       GetComponent.<Rigidbody>().velocity.y = 0;
-      GetComponent.<Rigidbody>().AddForce(new Vector2(0, jumpHeight));
+      GetComponent.<Rigidbody>().velocity = new Vector2(0, jumpHeight);
       canDoubleJump = true;
     }else{
       if(canDoubleJump){
         canDoubleJump = false;
         GetComponent.<Rigidbody>().velocity.y = 0;
-        GetComponent.<Rigidbody>().AddForce(new Vector2(0, jumpHeight));
+        GetComponent.<Rigidbody>().velocity = new Vector2(0, jumpHeight);
        }
     }
   }
@@ -91,7 +92,7 @@ function FixedUpdate() {
 
 //run a check to see if the player is on the ground
 	function isGrounded() {
-
+    canDoubleJump = true;
 		var front : Vector3 = transform.position;
 		front.x +=0.4;
 
