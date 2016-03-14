@@ -26,9 +26,11 @@ function OnTriggerEnter(col:Collider) {
 	if(col.tag == "Player") {
 		if(gameObject.tag == "gem") {
 			var effect : GameObject = Instantiate(particle, gameObject.transform.position, transform.rotation);
-			//var effectScale : Vector3 = gameObject.transform.localScale/2;
+			effect.transform.localScale = new Vector3 (1.5,1.5,1.5);
+			//var effectScale : Vector3 = gameObject.transform.localScale*2;
 			AudioSource.PlayClipAtPoint(clip, gameObject.transform.position);
 			gameController.AddScore (scoreValue);
+			effect.AddComponent.<DestroyParticle>();
 			Destroy(gameObject);
 		}
 	}
