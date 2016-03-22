@@ -7,18 +7,20 @@ private var targetRotation : int;
 private var canDoubleJump : boolean;
 
 var walkStateHash : int = Animator.StringToHash("Walk");
+var jumpStateHash : int = Animator.StringToHash("Jump");
 var anim : Animator;
+var distToGround: float;
 
 //Disable Gravity
 //GetComponent.<Rigidbody>().useGravity = false;
 
 function Start () {
     anim = GetComponent("Animator");
+    distToGround = GetComponent.<Collider>().bounds.extents.y;
 }
 
 function FixedUpdate() {
 	var stateInfo : AnimatorStateInfo = anim.GetCurrentAnimatorStateInfo(0);
-	transform.position.z = -9;
 
 	//Apply New Gravity
 	GetComponent.<Rigidbody>().AddForce(new Vector3(0, -gravity*GetComponent.<Rigidbody>().mass, 0));
@@ -30,6 +32,16 @@ function FixedUpdate() {
   // if(transform.position.y <= -20.0){
   //   transform.position = new Vector2(transform.position.x, -8.0f);
   // }
+
+  if(closeToGround()){
+    if(isGrounded()){
+      GetComponent.<CapsuleCollider>().height = 1.73;
+      GetComponent.<CapsuleCollider>().center = new Vector3(0,0.81,0);
+    }else{
+      GetComponent.<CapsuleCollider>().height = 1.3;
+      GetComponent.<CapsuleCollider>().center = new Vector3(0,1.3,0);
+    }
+  }
 
   if(Input.GetButton('Horizontal')){
   	anim.SetBool('Idle', false);
@@ -48,9 +60,15 @@ function FixedUpdate() {
   		anim.SetBool('Run', false);
   	}
   }else{
-  	anim.SetBool('Idle', true);
   	anim.SetBool('Walk', false);
   	anim.SetBool('Run', false);
+    if(isGrounded()){
+      anim.SetBool('Idle', true);
+      anim.SetBool('Jump', false);
+    }else{
+      anim.SetBool('Idle', false);
+      anim.SetBool('Jump', true);
+    }
   }
 
   if(Input.GetButton('Run') && Input.GetButton('Horizontal')){
@@ -72,13 +90,14 @@ function FixedUpdate() {
 	//Handle jump
 	//if user hits jump key and we are on the ground
 	if(Input.GetButtonDown("Jump")){
-    if(isGrounded()){
+    if(isGrounded() && stateInfo.nameHash != jumpStateHash && !anim.IsInTransition(0)){
     	anim.SetTrigger('Jump');
     	anim.SetBool('Walk', false);
   		anim.SetBool('Run', false);
+      anim.SetBool('Idle', false);
+      canDoubleJump = true;
       GetComponent.<Rigidbody>().velocity.y = 0;
       GetComponent.<Rigidbody>().velocity = new Vector2(0, jumpHeight);
-      canDoubleJump = true;
     }else{
       if(canDoubleJump){
         canDoubleJump = false;
@@ -91,33 +110,13 @@ function FixedUpdate() {
 }
 
 //run a check to see if the player is on the ground
-	function isGrounded() {
-    canDoubleJump = true;
-		var front : Vector3 = transform.position;
-		front.x +=0.4;
+function isGrounded(): boolean {
+ return Physics.Raycast(transform.position, -Vector3.up, distToGround + 0.01);
+}
 
-		var middle : Vector3 = transform.position;
-
-		var back : Vector3 = transform.position;
-		back.x -=0.4;
-
-		//debug raycast
-		var jumpLine : float = GetComponent.<Collider>().bounds.size.y/2 + 0.2;
-		Debug.DrawRay (middle, Vector3(0, -jumpLine, 0), Color.red);
-		Debug.DrawRay (front, Vector3(0, -jumpLine, 0), Color.red);
-		Debug.DrawRay (back, Vector3(0, -jumpLine, 0), Color.red);
-
-		if(
-		Physics.Raycast(front, Vector3.down, jumpLine) ||
-		Physics.Raycast(middle, Vector3.down, jumpLine) ||
-		Physics.Raycast(back, Vector3.down, jumpLine)
-
-		) {
-			return true;
-
-		}
-		return false;
-	}
+function closeToGround(): boolean {
+ return Physics.Raycast(transform.position, -Vector3.up, distToGround + 1);
+}
 
   function OnTriggerStay(other:Collider){
     if(other.attachedRigidbody){

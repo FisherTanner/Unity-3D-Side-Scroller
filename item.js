@@ -5,6 +5,7 @@ var scoreValue : int;
 private var gameController : GameController;
 public var particle : GameObject;
 public var clip : AudioClip;
+var playerHealth : int;
 
 function Start () {
 	//coinCount = 0;
@@ -32,6 +33,12 @@ function OnTriggerEnter(col:Collider) {
 			gameController.AddScore (scoreValue);
 			effect.AddComponent.<DestroyParticle>();
 			Destroy(gameObject);
+		}else if(gameObject.tag == "health"){
+			playerHealth = gameController.playerHealth;
+			if(playerHealth < 3 && playerHealth > 0){
+				gameController.increaseHealth();
+				Destroy(gameObject);
+			}
 		}
 	}
 }

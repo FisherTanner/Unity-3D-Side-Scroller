@@ -4,7 +4,7 @@ private var target : GameObject;
 public var players: GameObject[];
 
 function Start () {
-	target = GameObject.Find('Adventurer Alice-Blue');
+	target = GameObject.FindWithTag('Player');
 }
 
 function Update () {

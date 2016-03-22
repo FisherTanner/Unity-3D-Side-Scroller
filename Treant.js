@@ -26,7 +26,7 @@ function FixedUpdate(){
   stateInfo = anim.GetCurrentAnimatorStateInfo(0);
 
   dist = (Player.transform.position - transform.position);
-  Debug.Log(dist.x);
+  //Debug.Log(dist.x);
   if(!stun){
     if(dist.x > -10 && dist.x < 10 && !aggro && hitPoints != 0){
       anim.SetBool('cast spell', true);

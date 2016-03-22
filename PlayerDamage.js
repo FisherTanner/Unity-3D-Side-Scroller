@@ -8,14 +8,18 @@ var playerScript;
 var rb : Rigidbody;
 var stateInfo : AnimatorStateInfo;
 var died : boolean = false;
+var gameController : GameController;
+var playerHealth : int;
 
 //Disable Gravity
 //GetComponent.<Rigidbody>().useGravity = false;
 
 function Start () {
-    anim = GetComponent("Animator");
-    playerScript = GetComponent(PlayerController);
-    rb = GetComponent.<Rigidbody>();
+  var gameControllerObject : GameObject = GameObject.FindWithTag("GameController");
+  gameController = gameControllerObject.GetComponent(GameController);
+  anim = GetComponent("Animator");
+  playerScript = GetComponent(PlayerController);
+  rb = GetComponent.<Rigidbody>();
 }
 
 function Update(){
@@ -29,19 +33,22 @@ function FixedUpdate() {
 function OnCollisionEnter(col: Collision) {
   if(col.gameObject.tag=="Enemy"){
     if(isColliding) return;
+    Debug.Log(playerHealth);
+    gameController.decreaseHealth();
+    playerHealth = gameController.playerHealth;
     isColliding = true;
-    Debug.Log("You ran into a "+col.gameObject.name);
-    anim.SetTrigger('TakeDamage');
-    var dir : Vector3 = (transform.position - col.transform.position).normalized;
-    dir.y = 2;
-    //GetComponent.<Rigidbody>().AddForce(dir * 100);
-    rb.velocity = (dir*2);
-    GetComponent(PlayerController).enabled = false;
-    StartCoroutine(WaitForStunToEnd());
+    //Debug.Log("You ran into a "+col.gameObject.name);
+    if(playerHealth > 0){
+      anim.SetTrigger('TakeDamage');
+      var dir : Vector3 = (transform.position - col.transform.position).normalized;
+      dir.y = 2;
+      //GetComponent.<Rigidbody>().AddForce(dir * 100);
+      rb.velocity = (dir*2);
+      GetComponent(PlayerController).enabled = false;
+      StartCoroutine(WaitForStunToEnd());
+    }
   } else if(col.gameObject.tag=="Death") {
-    GetComponent(PlayerController).enabled = false;
-    anim.SetTrigger('Die');
-    GetComponent(PlayerDamage).enabled = false;
+    playerDeath();
   }
 }
 
@@ -52,10 +59,18 @@ function OnCollisionExit(col: Collision) {
   }
 }
 
+function playerDeath(){
+  GetComponent(PlayerController).enabled = false;
+  anim.SetTrigger('Die');
+  GetComponent(PlayerDamage).enabled = false;
+}
+
 function WaitForStunToEnd() {
-     // Wait 0.2 seconds
-     yield WaitForSeconds(0.4f);
-     GetComponent(PlayerController).enabled = true;
+  // Wait 0.2 seconds
+  if(playerHealth > 0){
+    yield WaitForSeconds(0.4f);
+    GetComponent(PlayerController).enabled = true;
+  }
  }
 
  // function PlayerDie(){
