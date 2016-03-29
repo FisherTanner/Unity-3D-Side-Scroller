@@ -39,3 +39,10 @@ function decreaseHealth(){
     player.GetComponent(PlayerDamage).playerDeath();
   }
 }
+
+// Use this function to resume the runtime after the game has been 
+// paused, the player has won, or the player has died
+function resumeRuntime(){
+  Time.timeScale = 1;
+}
+/////////////////////////
