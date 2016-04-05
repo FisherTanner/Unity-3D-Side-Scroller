@@ -11,10 +11,19 @@ var died : boolean = false;
 var gameController : GameController;
 var playerHealth : int;
 
+private var deathGUI : GameObject;
+private var controlAudio : GameObject;
+
+
 //Disable Gravity
 //GetComponent.<Rigidbody>().useGravity = false;
 
 function Start () {
+  controlAudio = GameObject.Find("GameController");
+  // Death Screen //
+  deathGUI = GameObject.Find("DeathMenu"); // Find the game object named DeathMenu
+  deathGUI.SetActive(false); // Turn the death screen off when the game starts
+  //////////////////
   var gameControllerObject : GameObject = GameObject.FindWithTag("GameController");
   gameController = gameControllerObject.GetComponent(GameController);
   anim = GetComponent("Animator");
@@ -62,7 +71,13 @@ function OnCollisionExit(col: Collision) {
 function playerDeath(){
   GetComponent(PlayerController).enabled = false;
   anim.SetTrigger('Die');
-  GetComponent(PlayerDamage).enabled = false;
+
+  // Death Screen //
+  yield WaitForSeconds(1.5f); // Wait for death animation to end
+  Time.timeScale = 0; // Stop the game time
+  deathGUI.SetActive(true); // Show the death screen once the player has died
+  //////////////////
+  controlAudio.GetComponent.<AudioSource>().volume = 0.4; // lower the volume
 }
 
 function WaitForStunToEnd() {

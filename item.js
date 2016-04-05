@@ -39,6 +39,6 @@ function OnTriggerEnter(col:Collider) {
 				gameController.increaseHealth();
 				Destroy(gameObject);
 			}
-		}
+		} 
 	}
 }
