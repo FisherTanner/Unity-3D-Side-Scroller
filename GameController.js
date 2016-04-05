@@ -40,7 +40,11 @@ function decreaseHealth(){
   }
 }
 
+<<<<<<< HEAD
 // Use this function to resume the runtime after the game has been
+=======
+// Use this function to resume the runtime after the game has been 
+>>>>>>> 3effbeeea0bb65665f6bf2ea29dc5ac9b05e78e2
 // paused, the player has won, or the player has died
 function resumeRuntime(){
   Time.timeScale = 1;

@@ -72,11 +72,12 @@ function playerDeath(){
   GetComponent(PlayerController).enabled = false;
   anim.SetTrigger('Die');
 
+  GetComponent(PlayerDamage).enabled = false;
+
   // Death Screen //
   yield WaitForSeconds(1.5f); // Wait for death animation to end
   Time.timeScale = 0; // Stop the game time
   deathGUI.SetActive(true); // Show the death screen once the player has died
-  //////////////////
   controlAudio.GetComponent.<AudioSource>().volume = 0.4; // lower the volume
 }
 
