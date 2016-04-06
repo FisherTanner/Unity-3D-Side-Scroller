@@ -35,6 +35,7 @@ function FixedUpdate() {
 
   if(closeToGround()){
     if(isGrounded()){
+      canDoubleJump = true;
       GetComponent.<CapsuleCollider>().height = 1.73;
       GetComponent.<CapsuleCollider>().center = new Vector3(0,0.81,0);
     }else{
@@ -90,7 +91,7 @@ function FixedUpdate() {
 	//Handle jump
 	//if user hits jump key and we are on the ground
 	if(Input.GetButtonDown("Jump")){
-    if(isGrounded() && stateInfo.nameHash != jumpStateHash && !anim.IsInTransition(0)){
+    if(isGrounded() && stateInfo.nameHash != jumpStateHash){
     	anim.SetTrigger('Jump');
     	anim.SetBool('Walk', false);
   		anim.SetBool('Run', false);
