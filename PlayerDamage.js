@@ -61,6 +61,27 @@ function OnCollisionEnter(col: Collision) {
   }
 }
 
+function OnTriggerEnter(col: Collider) {
+  if(col.gameObject.tag=="Enemy"){
+    Debug.Log(playerHealth);
+    gameController.decreaseHealth();
+    playerHealth = gameController.playerHealth;
+    isColliding = true;
+    //Debug.Log("You ran into a "+col.gameObject.name);
+    if(playerHealth > 0){
+      anim.SetTrigger('TakeDamage');
+      var dir : Vector3 = (transform.position - col.transform.position).normalized;
+      dir.y = 2;
+      //GetComponent.<Rigidbody>().AddForce(dir * 100);
+      rb.velocity = (dir*2);
+      GetComponent(PlayerController).enabled = false;
+      StartCoroutine(WaitForStunToEnd());
+    }
+  } else if(col.gameObject.tag=="Death") {
+    playerDeath();
+  }
+}
+
 function OnCollisionExit(col: Collision) {
   if(col.gameObject.tag=="Enemy"){
     isColliding = false;
