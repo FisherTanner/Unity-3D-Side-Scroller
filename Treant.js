@@ -10,6 +10,7 @@ var stun : boolean;
 var pRb : Rigidbody;
 public var hitPoints : int;
 private var reqHits : int;
+public var MoveSpeed : int;
 
 public var particle : GameObject;
 public var clip : AudioClip;
@@ -32,7 +33,14 @@ function FixedUpdate(){
       anim.SetBool('cast spell', true);
       StartCoroutine(WaitForAggro(1.2));
     } else if(aggro) {
-      anim.SetBool('walk', true);
+      anim.SetBool('cast spell', false);
+      anim.SetBool('run', true);
+      var lookPos = Player.transform.position - transform.position;
+      lookPos.y = 0;
+      var rotation = Quaternion.LookRotation(lookPos);
+      transform.rotation = Quaternion.Slerp(transform.rotation, rotation, Time.deltaTime * 4);
+      //transform.LookAt(Player.transform.position);
+      transform.position = Vector2.MoveTowards(transform.position, new Vector2(Player.transform.position.x, transform.position.y), MoveSpeed * Time.deltaTime);
     } else {
       anim.SetBool('cast spell', false);
     }

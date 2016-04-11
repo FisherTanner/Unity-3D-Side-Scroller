@@ -10,6 +10,8 @@ var stateInfo : AnimatorStateInfo;
 var died : boolean = false;
 var gameController : GameController;
 var playerHealth : int;
+var hitDelay : float;
+private var nextHitAllowed : float;
 
 private var deathGUI : GameObject;
 private var controlAudio : GameObject;
@@ -29,6 +31,7 @@ function Start () {
   anim = GetComponent("Animator");
   playerScript = GetComponent(PlayerController);
   rb = GetComponent.<Rigidbody>();
+  hitDelay = 1.0f;
 }
 
 function Update(){
@@ -40,10 +43,11 @@ function FixedUpdate() {
 }
 
 function OnCollisionEnter(col: Collision) {
-  if(col.gameObject.tag=="Enemy"){
+  if(col.gameObject.tag=="Enemy" && Time.time > nextHitAllowed){
     if(isColliding) return;
     Debug.Log(playerHealth);
     gameController.decreaseHealth();
+    nextHitAllowed = Time.time + hitDelay;
     playerHealth = gameController.playerHealth;
     isColliding = true;
     //Debug.Log("You ran into a "+col.gameObject.name);
@@ -57,14 +61,16 @@ function OnCollisionEnter(col: Collision) {
       StartCoroutine(WaitForStunToEnd());
     }
   } else if(col.gameObject.tag=="Death") {
-    playerDeath();
+    playerHealth = 0;
+    gameController.decreaseHealth();
   }
 }
 
 function OnTriggerEnter(col: Collider) {
-  if(col.gameObject.tag=="Enemy"){
+  if(col.gameObject.tag=="Enemy" && Time.time > nextHitAllowed){
     Debug.Log(playerHealth);
     gameController.decreaseHealth();
+    nextHitAllowed = Time.time + hitDelay;
     playerHealth = gameController.playerHealth;
     isColliding = true;
     //Debug.Log("You ran into a "+col.gameObject.name);
@@ -78,7 +84,8 @@ function OnTriggerEnter(col: Collider) {
       StartCoroutine(WaitForStunToEnd());
     }
   } else if(col.gameObject.tag=="Death") {
-    playerDeath();
+    playerHealth = 0;
+    gameController.decreaseHealth();
   }
 }
 
