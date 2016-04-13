@@ -112,7 +112,7 @@ function FixedUpdate() {
 
 //run a check to see if the player is on the ground
 function isGrounded(): boolean {
- return Physics.Raycast(transform.position, -Vector3.up, distToGround + 0.01);
+ return Physics.Raycast(transform.position, -Vector3.up, distToGround + 0.9);
 }
 
 function closeToGround(): boolean {

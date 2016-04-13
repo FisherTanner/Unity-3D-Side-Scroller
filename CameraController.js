@@ -7,7 +7,7 @@ function Start () {
 }
 
 function Update () {
-
+    transform.position.z = -15f;
     // X axis
    if(target.transform.position.x < -6.0f) {
        transform.position = new Vector3(-6.0f, transform.position.y, -15f);

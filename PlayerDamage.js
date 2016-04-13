@@ -67,7 +67,7 @@ function OnCollisionEnter(col: Collision) {
 }
 
 function OnTriggerEnter(col: Collider) {
-  if(col.gameObject.tag=="Enemy" && Time.time > nextHitAllowed){
+  if(col.gameObject.tag=="Bee" && Time.time > nextHitAllowed){
     Debug.Log(playerHealth);
     gameController.decreaseHealth();
     nextHitAllowed = Time.time + hitDelay;
