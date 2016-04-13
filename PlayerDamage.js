@@ -11,7 +11,7 @@ var died : boolean = false;
 var gameController : GameController;
 var playerHealth : int;
 var hitDelay : float;
-private var nextHitAllowed : float;
+var nextHitAllowed : float;
 
 private var deathGUI : GameObject;
 private var controlAudio : GameObject;

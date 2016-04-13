@@ -24,6 +24,10 @@ function Start() {
 }
 
 function FixedUpdate(){
+  GetComponent.<Rigidbody>().AddForce(new Vector3(0, -10*GetComponent.<Rigidbody>().mass, 0));
+  if(transform.position.y <= -10){
+    Destroy(gameObject);
+  }
   stateInfo = anim.GetCurrentAnimatorStateInfo(0);
 
   dist = (Player.transform.position - transform.position);
@@ -61,6 +65,7 @@ function WaitForAggro(time : float){
 
 function OnTriggerEnter(col:Collider){
   if(col.tag == 'Player'){
+    Player.GetComponent.<PlayerDamage>().nextHitAllowed = Time.time + 1.0;
     pRb.velocity = new Vector3(0,10,0);
     hitPoints--;
     if(hitPoints > 0){
@@ -81,12 +86,13 @@ function OnTriggerEnter(col:Collider){
 
 public function StunTimer(){
   yield new WaitForSeconds(1.5f);
-  var effect : GameObject = Instantiate(particle, Vector3((gameObject.transform.position.x+2),(gameObject.transform.position.y+1.5),gameObject.transform.position.z), transform.rotation);
+  var effect : GameObject = Instantiate(particle, Vector3((gameObject.transform.Find("RigHeadGizmo").position.x),(gameObject.transform.Find("RigHeadGizmo").position.y+1.5),gameObject.transform.Find("RigHeadGizmo").position.z), transform.rotation);
   effect.transform.localScale = new Vector3 (3,1,3);
   yield new WaitForSeconds(4f);
   effect.AddComponent.<DestroyParticle>();
+  anim.SetBool('die', false);
+  yield new WaitForSeconds(1f);
   stun = false;
   hitPoints = reqHits;
-  anim.SetBool('die', false);
   anim.SetBool('run', true);
 }

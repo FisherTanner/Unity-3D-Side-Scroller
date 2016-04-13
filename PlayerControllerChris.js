@@ -5,6 +5,7 @@ public var jumpHeight : float;
 public var gravity : float;
 private var targetRotation : int;
 private var canDoubleJump : boolean;
+private var ang : float;
 
 var jumpStateHash : int = Animator.StringToHash("Jump");
 var anim : Animator;
