@@ -14,6 +14,7 @@ var hitDelay : float;
 var nextHitAllowed : float;
 var thisLevel : String;
 
+
 private var deathGUI : GameObject;
 private var controlAudio : GameObject;
 
@@ -108,6 +109,7 @@ function playerDeath(){
   //Time.timeScale = 0; // Stop the game time
   deathGUI.SetActive(true); // Show the death screen once the player has died
   controlAudio.GetComponent.<AudioSource>().volume = 0.4; // lower the volume
+
   removeGUI();
   Invoke("removeGUI", 0.1);
 }
