@@ -33,14 +33,19 @@ function increaseHealth(){
 
 function decreaseHealth(){
   playerHealth--;
-  arrLife[playerHealth].SetActive(false);
-  Debug.Log(arrLife[playerHealth]);
-  if(playerHealth == 0){
+  if(playerHealth >= 0 && playerHealth <= 2){
+    arrLife[playerHealth].SetActive(false);
+  }
+  if(playerHealth <= 0){
+    Debug.Log(arrLife);
+    for(var i=0;i<arrLife.length;i++){
+      arrLife[i].SetActive(false);
+    }
     player.GetComponent(PlayerDamage).playerDeath();
   }
 }
 
-// Use this function to resume the runtime after the game has been 
+// Use this function to resume the runtime after the game has been
 // paused, the player has won, or the player has died
 function resumeRuntime(){
   Time.timeScale = 1;

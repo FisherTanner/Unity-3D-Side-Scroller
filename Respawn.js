@@ -6,8 +6,8 @@ var player : GameObject; // Drag the Player gameObject onto here
 
 function OnTriggerEnter(col : Collider) {
 	if(col.tag == "Player") {
-		// If the player collides with the gamObject with this script on it then delay 1.5 seconds then run the respawn function
-		Invoke("respawn", 1.5);
+		// If the player collides with the gamObject with this script on it then delay 0.001 seconds then run the respawn function
+		Invoke("respawn", 0.001);
 	}
 
 }

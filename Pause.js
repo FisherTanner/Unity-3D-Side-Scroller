@@ -13,7 +13,7 @@ function Start() {
 
 function Update() {
 
-	if(Input.GetKeyDown("p")) { // if the user presses p on the keyboard
+	if(Input.GetButtonDown("Pause")) { // if the user presses p on the keyboard
 
 		pauseGame = !pauseGame; // set switch boolean to be not what it was before
 

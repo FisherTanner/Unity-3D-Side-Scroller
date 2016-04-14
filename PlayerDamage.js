@@ -10,6 +10,9 @@ var stateInfo : AnimatorStateInfo;
 var died : boolean = false;
 var gameController : GameController;
 var playerHealth : int;
+var hitDelay : float;
+var nextHitAllowed : float;
+var thisLevel : String;
 
 private var deathGUI : GameObject;
 private var controlAudio : GameObject;
@@ -29,6 +32,7 @@ function Start () {
   anim = GetComponent("Animator");
   playerScript = GetComponent(PlayerController);
   rb = GetComponent.<Rigidbody>();
+  hitDelay = 1.0f;
 }
 
 function Update(){
@@ -40,10 +44,11 @@ function FixedUpdate() {
 }
 
 function OnCollisionEnter(col: Collision) {
-  if(col.gameObject.tag=="Enemy"){
+  if(col.gameObject.tag=="Enemy" && Time.time > nextHitAllowed){
     if(isColliding) return;
     Debug.Log(playerHealth);
     gameController.decreaseHealth();
+    nextHitAllowed = Time.time + hitDelay;
     playerHealth = gameController.playerHealth;
     isColliding = true;
     //Debug.Log("You ran into a "+col.gameObject.name);
@@ -57,7 +62,31 @@ function OnCollisionEnter(col: Collision) {
       StartCoroutine(WaitForStunToEnd());
     }
   } else if(col.gameObject.tag=="Death") {
-    playerDeath();
+    playerHealth = 0;
+    gameController.decreaseHealth();
+  }
+}
+
+function OnTriggerEnter(col: Collider) {
+  if(col.gameObject.tag=="Bee" && Time.time > nextHitAllowed){
+    Debug.Log(playerHealth);
+    gameController.decreaseHealth();
+    nextHitAllowed = Time.time + hitDelay;
+    playerHealth = gameController.playerHealth;
+    isColliding = true;
+    //Debug.Log("You ran into a "+col.gameObject.name);
+    if(playerHealth > 0){
+      anim.SetTrigger('TakeDamage');
+      var dir : Vector3 = (transform.position - col.transform.position).normalized;
+      dir.y = 2;
+      //GetComponent.<Rigidbody>().AddForce(dir * 100);
+      rb.velocity = (dir*2);
+      GetComponent(PlayerController).enabled = false;
+      StartCoroutine(WaitForStunToEnd());
+    }
+  } else if(col.gameObject.tag=="Death") {
+    playerHealth = 0;
+    gameController.decreaseHealth();
   }
 }
 
@@ -71,14 +100,23 @@ function OnCollisionExit(col: Collision) {
 function playerDeath(){
   GetComponent(PlayerController).enabled = false;
   anim.SetTrigger('Die');
+
   GetComponent(PlayerDamage).enabled = false;
 
   // Death Screen //
-  yield WaitForSeconds(1.5f); // Wait for death animation to end
-  Time.timeScale = 0; // Stop the game time
+  //yield WaitForSeconds(0.1f); // Wait for death animation to end
+  //Time.timeScale = 0; // Stop the game time
   deathGUI.SetActive(true); // Show the death screen once the player has died
-  //////////////////
-  controlAudio.GetComponent.<AudioSource>().volume = 0.4; // lower the volume 
+  controlAudio.GetComponent.<AudioSource>().volume = 0.4; // lower the volume
+  removeGUI();
+  Invoke("removeGUI", 0.1);
+}
+
+function removeGUI() {
+    yield WaitForSeconds(3);
+    deathGUI.SetActive(false);
+    controlAudio.GetComponent.<AudioSource>().volume = 1.0;
+    Application.LoadLevel(thisLevel);
 }
 
 function WaitForStunToEnd() {

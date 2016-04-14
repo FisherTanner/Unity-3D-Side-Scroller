@@ -2,6 +2,7 @@
 
 private var winGUI : GameObject; // win screen
 private var gameController : GameObject;
+public var nextLoadedLevel : String;
 
 function Start () {
   // Win Screen //
@@ -14,8 +15,15 @@ function Start () {
 function OnTriggerEnter(col:Collider) {
 	// Win Screen //
 	// yield WaitForSeconds(1.5f); // Wait for win animation to end
-	Time.timeScale = 0; // Stop the game time
+	//Time.timeScale = 0; // Stop the game time
 	winGUI.SetActive(true); // Show the win screen once the player has won
 	//////////////////
 	gameController.GetComponent.<AudioSource>().volume = 0.4; // lower the volume 
+	nextLevel();
+	Invoke("nextLevel", 0.1);
 }
+
+    function nextLevel() {
+        yield WaitForSeconds(5);
+        Application.LoadLevel(nextLoadedLevel);
+    }

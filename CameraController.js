@@ -1,16 +1,16 @@
 #pragma strict
 
 private var target : GameObject;
-public var players: GameObject[];
 
 function Start () {
-	target = GameObject.FindWithTag('Player');
+    target = GameObject.FindWithTag("Player");
 }
 
 function Update () {
+    transform.position.z = -15f;
     // X axis
-   if(target.transform.position.x < 0.0f) {
-  	transform.position = new Vector3(0.0f, transform.position.y, target.transform.position.z -12);
+   if(target.transform.position.x < -6.0f) {
+       transform.position = new Vector3(-6.0f, transform.position.y, -15f);
    }else if(target.transform.position.y < -3){
      transform.position.x = transform.position.x;
    }else{
@@ -19,7 +19,7 @@ function Update () {
 
    // Y axis
    if (target.transform.position.y < 0.0f) {
-       transform.position = new Vector3(transform.position.x, transform.position.y, target.transform.position.z-12);
+       transform.position = new Vector3(transform.position.x, transform.position.y, -15f);
    } else {
      transform.position.y = target.transform.position.y+2.44;
    }
